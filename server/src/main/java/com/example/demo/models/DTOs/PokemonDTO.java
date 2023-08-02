@@ -1,7 +1,6 @@
 package com.example.demo.models.DTOs;
 
 import com.example.demo.models.domains.Appearance;
-import com.example.demo.models.domains.Attack;
 import com.example.demo.models.domains.Type;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
@@ -42,9 +41,6 @@ public class PokemonDTO {
 
     @SerializedName("frontPhoto")
     public String frontPhoto;
-
-    @SerializedName("attacks")
-    public List<Attack> attacks;
 
     @SerializedName("types")
     public List<Type> types;

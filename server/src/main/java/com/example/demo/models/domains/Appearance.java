@@ -4,5 +4,5 @@ public enum Appearance {
     initial,
     normal,
     legendary,
-    singular
+    mythical
 }
