@@ -1,5 +1,6 @@
-package com.example.demo.models.APIResponses;
+package com.example.demo.models.APIResponses.pokemonById;
 
+import com.example.demo.models.APIResponses.pokemonById.OfficialPhoto;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.ToString;

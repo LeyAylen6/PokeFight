@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class GetAppearance {
+public class GetAppearanceAndEvolution {
 
     @SerializedName("capture_rate")
     public Integer captureRate;
@@ -17,4 +17,6 @@ public class GetAppearance {
     @SerializedName("is_mythical")
     public Boolean isMythical;
 
+    @SerializedName("evolves_from_species")
+    public IsEvolutionOf isEvolutionOf;
 }
