@@ -5,12 +5,9 @@ import lombok.*;
 
 @Getter
 @ToString
-
-public class GetName {
+public class PokemonType {
 
     @SerializedName("name")
-    public String name;
+    private String name;
 
-    @SerializedName("url")
-    public String url;
 }
