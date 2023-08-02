@@ -9,17 +9,20 @@ import com.example.demo.models.domains.Pokemon;
 import com.example.demo.models.domains.Pokemon.PokemonBuilder;
 import com.example.demo.models.domains.Type;
 import com.example.demo.repository.PokemonRepository;
-import com.example.demo.repository.PokemonsAPI;
+import com.example.demo.repository.PokemonsAPIRepository;
 import com.example.demo.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo.utils.Constants.MAX_POKEMONS;
 
+@Service
 public class PokemonService {
 
     @Autowired
@@ -29,16 +32,16 @@ public class PokemonService {
     TypeRepository typeRepository;
 
     @Autowired
-    PokemonsAPI pokemonsAPI;
+    PokemonsAPIRepository pokemonsAPIRepository;
 
     public String savePokemons() throws IOException, InterruptedException {
 
         for (int i = 1 ; i < MAX_POKEMONS; i++) {
 
             PokemonBuilder pokemonBuilder = Pokemon.builder();
-            GetPokemonById pokemonById = pokemonsAPI.getPokemonById(i);
-            GetEvolutionChain evolution = pokemonsAPI.GetEvolutionChain(i); // Esto no funciona asiii
-            GetAppearanceAndEvolution pokemonAppearanceAndEvolution = pokemonsAPI.getAppearance(i);
+            GetPokemonById pokemonById = pokemonsAPIRepository.getPokemonById(i);
+            GetEvolutionChain evolution = pokemonsAPIRepository.GetEvolutionChain(i); // Esto no funciona asiii
+            GetAppearanceAndEvolution pokemonAppearanceAndEvolution = pokemonsAPIRepository.getAppearance(i);
 
             saveTypes(pokemonById.getTypes());
 
@@ -47,7 +50,7 @@ public class PokemonService {
             } catch (Exception e) {
                 System.out.println("ERROR EN CATCH");
             }
-
+//            System.out.println(pokemonById.getTypes());
             pokemonBuilder
                     .name(pokemonById.getName())
                     .baseExperience(pokemonById.getBaseExperience())
@@ -57,9 +60,10 @@ public class PokemonService {
                     .oficialPhoto(pokemonById.getSprites().getOfficialPhoto().getPhoto().getFrontDefault())
                     .evolutionLevel(evolution.getEvolution().getEvolution().get(0).getEvolutionDetail().get(0).getEvolutionLevel())
                     .appearance(getAppearance(pokemonAppearanceAndEvolution))
-                    .types(pokemonById.getTypes().stream().map(type -> new Type(type.getPokemonType().getName())).toList());
+                    .types(saveTypes(pokemonById.getTypes()));
 
             Pokemon pokemonToSave = pokemonBuilder.build();
+
             pokemonRepository.save(pokemonToSave);
         };
 
@@ -77,15 +81,26 @@ public class PokemonService {
         return pokemonAppearance;
     };
 
-    public void saveTypes(List<Types> types) {
+    public ArrayList<Type> saveTypes(List<Types> types) {
+
+        ArrayList<Type> typesToSave = new ArrayList<Type>();
 
         for (Types type : types) {
             String name = type.getPokemonType().getName();
 
-            if (typeRepository.findByName(name).isEmpty()) {
-                typeRepository.save(new Type(name));
+            Optional<Type> typeOptional = typeRepository.findByName(name);
+
+            if (typeOptional.isEmpty()) {
+
+                Type newType = typeRepository.save(new Type(name));
+                typesToSave.add(newType);
+
+            } else {
+                typesToSave.add(typeOptional.get());
             }
         }
+
+        return typesToSave;
     }
 
     public void setPokemonEvolution(GetAppearanceAndEvolution appearanceAndEvolution, Integer currentPokemonId) {

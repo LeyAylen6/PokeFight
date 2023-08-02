@@ -1,2 +1,7 @@
-package com.example.demo.controllers;public class ExceptionHandlingController {
+package com.example.demo.controllers;
+
+public class ExceptionHandlingController {
+
+
+
 }
